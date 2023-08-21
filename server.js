@@ -38,7 +38,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
 
 // Sequelize connection
-const sequelize = new Sequelize('Signup', 'postgres', '2004', {
+const sequelize = new Sequelize('Signup', 'postgres', 'Gokul123@', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5432',
