@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Create a Sequelize connection
-const sequelize = new Sequelize('Admin', 'postgres', '2004', {
+const sequelize = new Sequelize('Admin', 'postgres', '', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5433',
