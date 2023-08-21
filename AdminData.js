@@ -16,6 +16,7 @@ const dbConfig = {
   user: 'postgres',
   password: '2004',
   host: 'localhost',
+  dialect: 'postgres',
   port: "5432", 
   database: 'Signup',
 };
