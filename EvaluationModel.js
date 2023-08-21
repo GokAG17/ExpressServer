@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Create a Sequelize connection for the evaluation form database
-const sequelize = new Sequelize('EvaluationData', 'postgres', '', {
+const sequelize = new Sequelize('EvaluationData', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5432',

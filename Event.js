@@ -8,7 +8,7 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 
-const sequelize = new Sequelize('Event', 'postgres', '', {
+const sequelize = new Sequelize('Event', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5432',

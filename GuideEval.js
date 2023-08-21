@@ -5,7 +5,7 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 // Create a Sequelize connection for the evaluation form database
-const sequelize = new Sequelize('EvaluationDB', 'postgres', '', {
+const sequelize = new Sequelize('EvaluationDB', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5432',

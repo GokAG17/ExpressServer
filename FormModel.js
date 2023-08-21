@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Sequelize connection for the form database
-const sequelize = new Sequelize('FormDB', 'postgres', '', {
+const sequelize = new Sequelize('FormDB', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5432',
