@@ -18,7 +18,7 @@ const dbConfig = {
   host: 'localhost',
   dialect: 'postgres',
   port: "5432", 
-  database: 'Signup',
+  database: 'signup',
 };
 
 // Helper function to parse Excel data
