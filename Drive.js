@@ -6,7 +6,7 @@ const router = express.Router();
 const sequelize = new Sequelize('Drive', 'postgres', '', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5433', // Adjust the port number based on your database configuration
+  port: '5432', // Adjust the port number based on your database configuration
 });
 // Define the LinkSubmission model
 const LinkSubmission = sequelize.define('LinkSubmission', {

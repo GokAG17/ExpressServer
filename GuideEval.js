@@ -8,7 +8,7 @@ router.use(bodyParser.json());
 const sequelize = new Sequelize('EvaluationDB', 'postgres', '', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5433',
+  port: '5432',
 });
 
 sequelize.options.logging = console.log;

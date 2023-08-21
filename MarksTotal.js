@@ -6,7 +6,7 @@ const router = express.Router();
 const sequelize = new Sequelize('MarksTotal', 'postgres', '', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5433', 
+  port: '5432', 
 });
 
 const Marks = sequelize.define('marks', {

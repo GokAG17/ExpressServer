@@ -11,7 +11,7 @@ router.use(bodyParser.json());
 const sequelize = new Sequelize('Event', 'postgres', '', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5433',
+  port: '5432',
 });
 
 const Event = sequelize.define('Event', {

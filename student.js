@@ -7,7 +7,7 @@ const router = express.Router();
 const sequelize = new Sequelize('Signup', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5433',
+  port: '5432',
 });
 
 // Define the Account model

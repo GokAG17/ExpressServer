@@ -41,7 +41,7 @@ app.use(express.json());
 const sequelize = new Sequelize('Signup', 'postgres', '', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5433',
+  port: '5432',
 });
 
 sequelize.options.logging = console.log;

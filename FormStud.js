@@ -7,7 +7,7 @@ const router = express.Router();
 const sequelize = new Sequelize('FormSub', 'postgres', '', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5433', // Adjust the port number based on your database configuration
+  port: '5432', // Adjust the port number based on your database configuration
 });
 
 const Project = sequelize.define('Project', {
