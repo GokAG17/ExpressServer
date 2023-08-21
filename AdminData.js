@@ -14,7 +14,7 @@ const upload = multer({ storage: storage });
 // Database connection configuration
 const dbConfig = {
   user: 'postgres',
-  password: '2004',
+  password: 'Gokul123@',
   host: 'localhost',
   dialect: 'postgres',
   port: "5432", 

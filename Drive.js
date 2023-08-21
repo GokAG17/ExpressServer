@@ -3,7 +3,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 const router = express.Router();
 
-const sequelize = new Sequelize('Drive', 'postgres', '2004', {
+const sequelize = new Sequelize('Drive', 'postgres', 'Gokul123@', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5432', // Adjust the port number based on your database configuration

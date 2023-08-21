@@ -4,7 +4,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const router = express.Router();
 
 // Create a new Sequelize instance with your database credentials
-const sequelize = new Sequelize('FormSub', 'postgres', '2004', {
+const sequelize = new Sequelize('FormSub', 'postgres', 'Gokul123@', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5432', // Adjust the port number based on your database configuration
