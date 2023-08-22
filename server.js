@@ -165,7 +165,7 @@ app.post('/api/login', async (req, res) => {
 
         // Set the tokens and rollNo as cookies
         res.cookie('authToken', token, { httpOnly: true, sameSite: 'none' });
-        res.cookie('rollNo', rollNo, { secure: true, sameSite: 'none' });
+        res.cookie('rollNo', rollNo, {  httpOnly: true, sameSite: 'none' });
 
         console.log('authToken Cookie:', token); // Log authToken value
         console.log('rollNo Cookie:', rollNo);
