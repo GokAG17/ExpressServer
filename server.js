@@ -609,6 +609,6 @@ app.use('/api', marksRoute);
 
 
 // Start the server
-https.createServer(options, app).listen(5000, () => {
+https.createServer(app).listen(5000, () => {
   console.log('Server is running on port 5000 over HTTPS');
 });
