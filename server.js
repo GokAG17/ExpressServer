@@ -607,10 +607,6 @@ app.use('/api', weightageRouter);
 // Use the imported routes as middleware
 app.use('/api', marksRoute);
 
-const options = {
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem')
-};
 
 // Start the server
 https.createServer(options, app).listen(5000, () => {
