@@ -172,25 +172,25 @@ app.post('/api/login', async (req, res) => {
         const token = generateToken(account);
 
         // Set the tokens and rollNo as cookies
-        res.cookie('authToken', token, { httpOnly: true, secure: true, sameSite: 'none', path: '/' });
-        res.cookie('rollNo', rollNo, { secure: true, sameSite: 'none', path: '/' });
+        res.cookie('authToken', token, { path: '/', httpOnly: true,secure: true, sameSite: 'none',  });
+          res.cookie('rollNo', rollNo, { path: '/', httpOnly: true,secure: true, sameSite: 'none', });
 
 
-        console.log('authToken Cookie:', token); // Log authToken value
-        console.log('rollNo Cookie:', rollNo);
+          console.log('authToken Cookie:', token); // Log authToken value
+          console.log('rollNo Cookie:', rollNo);
 
-        res.json({ message: 'Login successful' });
-      } else {
+          res.json({ message: 'Login successful' });
+        } else {
+          res.status(401).json({ error: 'Invalid credentials' });
+        }
+    } else {
         res.status(401).json({ error: 'Invalid credentials' });
       }
-    } else {
-      res.status(401).json({ error: 'Invalid credentials' });
+    } catch (error) {
+      console.error('Error during login:', error);
+      res.status(500).json({ error: 'An error occurred during login' });
     }
-  } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ error: 'An error occurred during login' });
-  }
-});
+  });
 
 // Logout route
 app.get('/api/logout', (req, res) => {
