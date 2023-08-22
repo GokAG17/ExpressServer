@@ -8,7 +8,7 @@ const { Form } = require('./FormModel');
 const { EvaluationForm } = require('./EvaluationModel');
 const formProjectRoutes = require('./FormStud');
 const { logToken, authenticateToken } = require('./authMiddleware');
-const Drive= require('./Drive');
+const Drive = require('./Drive');
 const adminRouter = require('./Admin');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -38,7 +38,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
 
 // Sequelize connection
-const sequelize = new Sequelize('signup', 'postgres','Gokul123@', {
+const sequelize = new Sequelize('signup', 'postgres', 'Gokul123@', {
   host: 'localhost',
   dialect: 'postgres',
   port: '5432',
@@ -164,8 +164,9 @@ app.post('/api/login', async (req, res) => {
         const token = generateToken(account);
 
         // Set the tokens and rollNo as cookies
-        res.cookie('authToken', token, { httpOnly: true, sameSite: 'none' });
-        res.cookie('rollNo', rollNo, {  httpOnly: true, sameSite: 'none' });
+        res.cookie('authToken', token, { httpOnly: true, secure: true, sameSite: 'none', path: '/' });
+        res.cookie('rollNo', rollNo, { secure: true, sameSite: 'none', path: '/' });
+
 
         console.log('authToken Cookie:', token); // Log authToken value
         console.log('rollNo Cookie:', rollNo);
@@ -315,7 +316,7 @@ app.post('/api/evaluation-forms', async (req, res) => {
       formParameters,
       formValues,
       reviewType,
-      remarks, 
+      remarks,
       calculatedTotalMarks,
     });
 
@@ -336,7 +337,7 @@ app.get('/api/evaluation-forms', logToken, authenticateToken, async (req, res) =
 
     // Get the review type from the query parameters
     const { reviewType } = req.query;
-    
+
     console.log('Received request with rollNo:', rollNo, 'and reviewType:', reviewType);
     // Find the evaluation form submission in the database by the user's roll number and review type
     const submissionData = await EvaluationForm.findOne({ where: { rollNo, reviewType } });
@@ -504,7 +505,7 @@ app.get('/api/accounts/email', async (req, res) => {
 app.use('/api', formProjectRoutes);
 
 // Guide Eval
-app.use('/api',logToken, authenticateToken, EvalGuide);
+app.use('/api', logToken, authenticateToken, EvalGuide);
 
 // Use the DriveLink router as middleware
 app.use('/api', Drive);
@@ -555,7 +556,7 @@ app.get('/admin/getRoleCounts', async (req, res) => {
 
 
 // Use the Event module routes
-app.use('/api', authenticateToken,logToken, EventModule);
+app.use('/api', authenticateToken, logToken, EventModule);
 
 Account.getStudentEmailsByRole = async function (role) {
   try {
@@ -573,7 +574,7 @@ Account.getStudentEmailsByRole = async function (role) {
 };
 
 app.post('/api/send-email', async (req, res) => {
-  const { subject, message} = req.body;
+  const { subject, message } = req.body;
   const role = 'student';
   try {
     const studentEmails = await Account.getStudentEmailsByRole(role);
