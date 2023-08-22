@@ -167,6 +167,9 @@ app.post('/api/login', async (req, res) => {
         res.cookie('authToken', token, { httpOnly: true, secure: true, sameSite: 'lax' });
         res.cookie('rollNo', rollNo, { secure: true, sameSite: 'lax' });
 
+        console.log('authToken Cookie:', token); // Log authToken value
+        console.log('rollNo Cookie:', rollNo);
+
         res.json({ message: 'Login successful' });
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
