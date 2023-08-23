@@ -185,8 +185,8 @@ app.post('/api/login', async (req, res) => {
         const token = generateToken(account);
 
         // Set the tokens and rollNo as cookies
-        res.cookie('authToken', token, { path: '/', secure: true, sameSite: 'none' });
-        res.cookie('rollNo', rollNo, { path: '/',  secure: true, sameSite: 'none' });
+        res.cookie('authToken', token, { path: '/',  sameSite: 'none' });
+        res.cookie('rollNo', rollNo, { path: '/',  sameSite: 'none' });
 
         console.log('Set-Cookie header:', res.getHeaders());
         console.log('authToken Cookie:', token); // Log authToken value
