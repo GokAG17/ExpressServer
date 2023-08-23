@@ -17,11 +17,11 @@ const EventModule = require('./Event');
 const EvalGuide = require('./GuideEval');
 const weightageRouter = require('./WeightageMark');
 const marksRoute = require('./MarksTotal')
-const cookieParser = require('cookie-parser');
+/*const cookieParser = require('cookie-parser');*/
 const sendEmail = require('./emailSender');
 const app = express();
 
-app.use(cookieParser());
+/*app.use(cookieParser());*/
 
 // Update your CORS configuration to set the appropriate origin
 const corsOptions = {
