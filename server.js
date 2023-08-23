@@ -23,14 +23,23 @@ const app = express();
 
 app.use(cookieParser());
 
-// Update your CORS configuration to set the appropriate origin
+// CORS configuration for preflight requests
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your frontend's URL
+  origin: 'http://localhost:3000', // Your frontend's URL
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
-  exposedHeaders: ['Set-Cookie'], // Use correct case for the header name
+  optionsSuccessStatus: 204, // HTTP status to return for preflight requests
+  exposedHeaders: ['Set-Cookie'], // List any additional headers you want to expose
 };
 
-app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Apply CORS options to all preflight requests
+
+// CORS configuration for actual requests
+app.use(cors({
+  origin: 'http://localhost:3000', // Your frontend's URL
+  credentials: true,
+  exposedHeaders: ['Set-Cookie'], // List any additional headers you want to expose
+}));
 
 /*// Enable CORS for all routes
 app.use((req, res, next) => {
