@@ -168,8 +168,18 @@ app.post('/api/login', async (req, res) => {
         const token = generateToken(account);
 
         // Set the tokens and rollNo as cookies
-        res.cookie('authToken', token,);
-        res.cookie('rollNo', rollNo,);
+        // Set the tokens and rollNo as cookies with appropriate attributes
+        res.cookie('authToken', token, {
+          httpOnly: true, // Make the cookie accessible only via HTTP(S)
+          secure: true,   // Set the cookie only for HTTPS connections
+          sameSite: 'none' // Allow cross-site access
+        });
+
+        res.cookie('rollNo', rollNo, {
+          httpOnly: true, // Make the cookie accessible only via HTTP(S)
+          secure: true,   // Set the cookie only for HTTPS connections
+          sameSite: 'none' // Allow cross-site access
+        });
         console.log('Set-Cookie header:', res.getHeaders());
         console.log('authToken Cookie:', token); // Log authToken value
         console.log('rollNo Cookie:', rollNo);
