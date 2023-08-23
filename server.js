@@ -23,32 +23,15 @@ const app = express();
 
 app.use(cookieParser());
 
-// CORS configuration for preflight requests
+// Update your CORS configuration to set the appropriate origin
 const corsOptions = {
-  origin: 'http://localhost:3000', // Your frontend's URL
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  origin: 'http://localhost:3000', // Replace with your frontend's URL
   credentials: true,
-  optionsSuccessStatus: 204, // HTTP status to return for preflight requests
-  exposedHeaders: ['Set-Cookie'], // List any additional headers you want to expose
+  exposedHeaders: ['Set-Cookie'], // Use correct case for the header name
 };
 
-app.options('*', cors(corsOptions)); // Apply CORS options to all preflight requests
+app.use(cors(corsOptions));
 
-// CORS configuration for actual requests
-app.use(cors({
-  origin: 'http://localhost:3000', // Your frontend's URL
-  credentials: true,
-  exposedHeaders: ['Set-Cookie'], // List any additional headers you want to expose
-}));
-
-/*// Enable CORS for all routes
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Allow-Credentials', true);
-  next();
-});*/
 
 // Add this line to increase payload size limit
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -185,16 +168,11 @@ app.post('/api/login', async (req, res) => {
         const token = generateToken(account);
 
         // Set the tokens and rollNo as cookies
-        res.cookie('authToken', token, { path: '/',  sameSite: 'none' });
-        res.cookie('rollNo', rollNo, { path: '/',  sameSite: 'none' });
-
+        res.cookie('authToken', token, { httpOnly: true, secure: true, sameSite: 'none' });
+        res.cookie('rollNo', rollNo, {  httpOnly: true, secure: true, sameSite: 'none' });
         console.log('Set-Cookie header:', res.getHeaders());
         console.log('authToken Cookie:', token); // Log authToken value
         console.log('rollNo Cookie:', rollNo);
-
-        // Set the Access-Control-Allow-Origin header to allow the request origin
-        res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // Change to your client's origin
-
         res.json({ message: 'Login successful' });
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
