@@ -27,6 +27,7 @@ app.use(cookieParser());
 app.use(cors({
   origin: 'http://localhost:3000', // Replace with your frontend's URL
   credentials: true,
+  exposedHeaders: ['Set-Cookie'],
 }));
 
 // Enable CORS for all routes
