@@ -21,7 +21,6 @@ const cookieParser = require('cookie-parser');
 const sendEmail = require('./emailSender');
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
 const app = express();
 
 app.use(cookieParser());
