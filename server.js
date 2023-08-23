@@ -24,19 +24,19 @@ const app = express();
 app.use(cookieParser());
 
 // Update your CORS configuration to set the appropriate origin
-app.use(cors({
+/*app.use(cors({
   origin: 'http://localhost:3000', // Replace with your frontend's URL
   credentials: true,
-}));
+}));*/
 
-// Enable CORS for all routes
+/*// Enable CORS for all routes
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header('Access-Control-Allow-Credentials', true);
   next();
-});
+});*/
 
 // Add this line to increase payload size limit
 app.use(bodyParser.json({ limit: '50mb' }));
