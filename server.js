@@ -24,10 +24,13 @@ const app = express();
 app.use(cookieParser());
 
 // Update your CORS configuration to set the appropriate origin
-app.use(cors({
+const corsOptions = {
   origin: 'http://localhost:3000', // Replace with your frontend's URL
   credentials: true,
-}));
+  exposedHeaders: ['Set-Cookie'], // Use correct case for the header name
+};
+
+app.use(cors(corsOptions));
 
 /*// Enable CORS for all routes
 app.use((req, res, next) => {
