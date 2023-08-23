@@ -19,6 +19,9 @@ const weightageRouter = require('./WeightageMark');
 const marksRoute = require('./MarksTotal')
 const cookieParser = require('cookie-parser');
 const sendEmail = require('./emailSender');
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 
 app.use(cookieParser());
@@ -607,6 +610,14 @@ app.use('/api', marksRoute);
 
 
 // Start the server
-app.listen(5000, () => {
-  console.log('Server started on port 5000');
+const keyPath = path.join(__dirname, 'key.pem');
+const certPath = path.join(__dirname, 'cert.pem');
+
+const options = {
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certPath)
+};
+
+https.createServer(options, app).listen(5000, () => {
+    console.log('Server is running on port 5000 over HTTPS');
 });
