@@ -27,7 +27,6 @@ app.use(cookieParser());
 app.use(cors({
   origin: 'http://localhost:3000', // Replace with your frontend's URL
   credentials: true,
-  exposedHeaders: ['Set-Cookie'],
 }));
 
 // Enable CORS for all routes
@@ -176,7 +175,7 @@ app.post('/api/login', async (req, res) => {
         res.cookie('authToken', token, { path: '/', httpOnly: true,secure: true, sameSite: 'none',  });
           res.cookie('rollNo', rollNo, { path: '/', httpOnly: true,secure: true, sameSite: 'none', });
 
-
+          console.log('Set-Cookie header:', res.getHeaders());
           console.log('authToken Cookie:', token); // Log authToken value
           console.log('rollNo Cookie:', rollNo);
 
