@@ -168,11 +168,12 @@ app.post('/api/login', async (req, res) => {
         const token = generateToken(account);
 
         // Set the tokens and rollNo as cookies
-        res.cookie('authToken', token, { httpOnly: true, secure: true, sameSite: 'none' });
-        res.cookie('rollNo', rollNo, {  httpOnly: true, secure: true, sameSite: 'none' });
+        res.cookie('authToken', token, { httpOnly: true, secure: true, sameSite: 'lax' });
+        res.cookie('rollNo', rollNo, { httpOnly: true, secure: true, sameSite: 'lax' });
         console.log('Set-Cookie header:', res.getHeaders());
         console.log('authToken Cookie:', token); // Log authToken value
         console.log('rollNo Cookie:', rollNo);
+
         res.json({ message: 'Login successful' });
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
