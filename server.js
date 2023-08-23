@@ -170,13 +170,13 @@ app.post('/api/login', async (req, res) => {
         // Set the tokens and rollNo as cookies
         // Set the tokens and rollNo as cookies with appropriate attributes
         res.cookie('authToken', token, {
-          httpOnly: true, // Make the cookie accessible only via HTTP(S)
+          httpOnly: false, // Make the cookie accessible only via HTTP(S)
           secure: true,   // Set the cookie only for HTTPS connections
           sameSite: 'none' // Allow cross-site access
         });
 
         res.cookie('rollNo', rollNo, {
-          httpOnly: true, // Make the cookie accessible only via HTTP(S)
+          httpOnly: false, // Make the cookie accessible only via HTTP(S)
           secure: true,   // Set the cookie only for HTTPS connections
           sameSite: 'none' // Allow cross-site access
         });
