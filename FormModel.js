@@ -1,10 +1,10 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Sequelize connection for the form database
-const sequelize = new Sequelize('formdb', 'postgres', 'Gokul123@', {
+const sequelize = new Sequelize('Signup', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5432',
+  port: '5433',
 });
 
 sequelize.options.logging = console.log;

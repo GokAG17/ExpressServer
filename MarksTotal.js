@@ -3,10 +3,10 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 const router = express.Router();
 
-const sequelize = new Sequelize('markstotal', 'postgres', 'Gokul123@', {
+const sequelize = new Sequelize('Signup', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5432', 
+  port: '5433',
 });
 
 const Marks = sequelize.define('marks', {

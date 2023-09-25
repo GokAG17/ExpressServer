@@ -7,7 +7,6 @@ const { createForm } = require('./FormController');
 const { Form } = require('./FormModel');
 const { EvaluationForm } = require('./EvaluationModel');
 const formProjectRoutes = require('./FormStud');
-const { logToken, authenticateToken } = require('./authMiddleware');
 const Drive = require('./Drive');
 const adminRouter = require('./Admin');
 const bodyParser = require('body-parser');
@@ -17,11 +16,11 @@ const EventModule = require('./Event');
 const EvalGuide = require('./GuideEval');
 const weightageRouter = require('./WeightageMark');
 const marksRoute = require('./MarksTotal')
-/*const cookieParser = require('cookie-parser');*/
+const cookieParser = require('cookie-parser');
 const sendEmail = require('./emailSender');
 const app = express();
 
-/*app.use(cookieParser());*/
+app.use(cookieParser());
 
 // Update your CORS configuration to set the appropriate origin
 const corsOptions = {
@@ -37,15 +36,13 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-
-// Middleware to parse JSON bodies
 app.use(express.json());
 
 // Sequelize connection
-const sequelize = new Sequelize('signup', 'postgres', 'Gokul123@', {
+const sequelize = new Sequelize('Signup', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5432',
+  port: '5433',
 });
 
 sequelize.options.logging = console.log;
@@ -81,11 +78,11 @@ const Account = sequelize.define('Account', {
     allowNull: false,
   },
   rollNo: {
-    type: DataTypes.STRING, // Adjust the data type as per your requirements
+    type: DataTypes.STRING, 
     allowNull: false,
   },
   department: {
-    type: DataTypes.STRING, // Add the department field with the appropriate data type
+    type: DataTypes.STRING, 
     allowNull: false,
   },
 });
@@ -109,16 +106,13 @@ app.get('/', (req, res) => {
 app.post('/api/signup', async (req, res) => {
   const { firstName, lastName, email, password, phoneNumber, role, university, rollNo, department } = req.body;
 
-  // Perform validation or additional checks on the received data
   if (!firstName || !lastName || !email || !password || !phoneNumber || !role || !university || !rollNo || !department) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
-    // Generate a hash of the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new account with the hashed password
     const account = await Account.create({
       firstName,
       lastName,
@@ -128,7 +122,7 @@ app.post('/api/signup', async (req, res) => {
       role,
       university,
       rollNo,
-      department, // Include department in the account creation
+      department, 
     });
 
     res.status(201).json(account);
@@ -137,20 +131,6 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ error: 'Account creation failed' });
   }
 });
-
-
-const generateToken = (account) => {
-  const { role, email, rollNo } = account;
-  const expiresIn = '12h';
-  const secretKey = 'your_secret_key_here'; // Replace with your own secret key
-  // Create the token payload
-  const payload = { role, email, rollNo };
-
-  // Generate the token
-  const token = jwt.sign(payload, secretKey, { expiresIn });
-
-  return token;
-};
 
 
 // Login route
@@ -164,28 +144,6 @@ app.post('/api/login', async (req, res) => {
       const passwordMatch = await bcrypt.compare(password, account.password);
 
       if (passwordMatch) {
-        // Generate the token
-        const token = generateToken(account);
-
-        // Set the tokens and rollNo as cookies with appropriate attributes
-        res.cookie('authToken', token, {
-          domain: 'yourdomain.com', // Change this to your domain
-          httpOnly: false,
-          secure: true,
-          sameSite: 'none'
-        });
-
-        res.cookie('rollNo', rollNo, {
-          domain: 'yourdomain.com', // Change this to your domain
-          httpOnly: false,
-          secure: true,
-          sameSite: 'none'
-        });
-
-        console.log('Set-Cookie header:', res.getHeaders());
-        console.log('authToken Cookie:', token); // Log authToken value
-        console.log('rollNo Cookie:', rollNo);
-
         res.json({ message: 'Login successful' });
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
@@ -201,31 +159,21 @@ app.post('/api/login', async (req, res) => {
 
 // Logout route
 app.get('/api/logout', (req, res) => {
-  res.clearCookie('authToken');
-  res.clearCookie('rollNo');
+  /*res.clearCookie('authToken');
+  res.clearCookie('rollNo');*/
   res.json({ message: 'Logged out successfully' });
 });
 
 
-app.use(logToken);
-app.use(authenticateToken);
 
-app.get('/api/currentuser', authenticateToken, (req, res) => {
-  const rollNo = req.user.rollNo;
-  const requestedRole = req.query.role; // Get the requested role from the query parameter
+app.get('/api/currentuser', (req, res) => {
+  const rollNo = req.query.rollNo; // Get the rollNo from the query parameter
 
   if (rollNo) {
     Account.findOne({ where: { rollNo } })
       .then((user) => {
         if (user) {
-          // Check if the requested role matches the user's role
-          if (requestedRole && requestedRole === user.role) {
-            res.json(user);
-          } else if (!requestedRole) {
-            res.json(user);
-          } else {
-            res.status(403).json({ error: 'Access denied' });
-          }
+          res.json(user);
         } else {
           console.log('User not found');
           res.status(404).json({ error: 'User not found' });
@@ -242,13 +190,18 @@ app.get('/api/currentuser', authenticateToken, (req, res) => {
 
 
 // API endpoint to update user data
-app.post('/api/updateuser', logToken, authenticateToken, async (req, res) => {
+app.post('/api/updateuser', async (req, res) => {
   try {
-    // Get the user's rollNo from the authenticated token (assuming you have stored the rollNo in the token)
-    const { rollNo } = req.user; // Assuming the rollNo is available in req.user
+    // Get the user's rollNo from the cookie
+    const rollNo = req.cookies.loggedIn;
+
+    if (!rollNo) {
+      // Cookie is not set, user is not authenticated
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
     // Get the updated user data from the request body
-    const { firstName, lastName, email, phoneNumber } = req.body;
+    const { firstName, lastName, email, phoneNumber, department } = req.body;
 
     // Find the user in the database by their rollNo
     const user = await Account.findOne({ where: { rollNo } });
@@ -263,16 +216,10 @@ app.post('/api/updateuser', logToken, authenticateToken, async (req, res) => {
     user.lastName = lastName;
     user.email = email;
     user.phoneNumber = phoneNumber;
+    user.department = department; // Assuming department is also editable
 
     // Save the changes to the database
     await user.save();
-
-    // Generate a new token with the updated user data (optional)
-    const token = jwt.sign(
-      { rollNo: user.rollNo, role: user.role, email: user.email }, // Customize the token payload as needed
-      'your_secret_key_here',
-      { expiresIn: '1h' } // Set the token expiration time as needed
-    );
 
     // Respond with the updated user data (you can also send a success message if needed)
     res.json({
@@ -283,8 +230,8 @@ app.post('/api/updateuser', logToken, authenticateToken, async (req, res) => {
       phoneNumber: user.phoneNumber,
       role: user.role,
       university: user.university,
+      department: user.department, // Include the department in the response
       // Add other relevant user data here
-      token: token, // Optional: Send the new token to the client if needed
     });
   } catch (error) {
     console.error('Error updating user data:', error);
@@ -296,7 +243,7 @@ app.post('/api/updateuser', logToken, authenticateToken, async (req, res) => {
 app.post('/api/forms/create', createForm);
 
 // Fetch all forms from the database
-app.get('/api/forms', authenticateToken, async (req, res) => {
+app.get('/api/forms',async (req, res) => {
   try {
     const { reviewSystem } = req.query;
 
@@ -344,11 +291,11 @@ app.post('/api/evaluation-forms', async (req, res) => {
 
 
 // API endpoint to get the evaluation form submission based on roll number and review type
-app.get('/api/evaluation-forms', logToken, authenticateToken, async (req, res) => {
+app.get('/api/evaluation-forms', async (req, res) => {
   try {
 
     // Get the user's roll number from the authenticated token (assuming you have stored it in req.user)
-    const { rollNo } = req.user; // Assuming the user's roll number is available in req.user
+    const { rollNo } = req.query; // Assuming the user's roll number is available in req.user
 
     // Get the review type from the query parameters
     const { reviewType } = req.query;
@@ -371,7 +318,7 @@ app.get('/api/evaluation-forms', logToken, authenticateToken, async (req, res) =
 });
 
 // API endpoint to get the evaluation form submission based on roll number and review type
-app.get('/api/evaluationstaff', logToken, authenticateToken, async (req, res) => {
+app.get('/api/evaluationstaff',async (req, res) => {
   try {
     // Get the roll number and review type from the query parameters
     const { rollNo, reviewType } = req.query;
@@ -402,7 +349,7 @@ app.get('/api/evaluationstaff', logToken, authenticateToken, async (req, res) =>
 
 
 // API endpoint to check if an evaluation form entry exists for a given roll number and review type
-app.get('/api/evaluation-forms/check', logToken, authenticateToken, async (req, res) => {
+app.get('/api/evaluation-forms/check', async (req, res) => {
   try {
     // Get the roll number and review type from the query parameters
     const { rollNo, reviewType } = req.query;
@@ -424,7 +371,7 @@ app.get('/api/evaluation-forms/check', logToken, authenticateToken, async (req, 
 });
 
 // API endpoint to update an existing evaluation form entry
-app.put('/api/evaluation-forms/:id', logToken, authenticateToken, async (req, res) => {
+app.put('/api/evaluation-forms/:id', async (req, res) => {
   try {
     // Get the evaluation form entry ID from the URL parameter
     const { id } = req.params;
@@ -520,7 +467,7 @@ app.get('/api/accounts/email', async (req, res) => {
 app.use('/api', formProjectRoutes);
 
 // Guide Eval
-app.use('/api', logToken, authenticateToken, EvalGuide);
+app.use('/api',EvalGuide);
 
 // Use the DriveLink router as middleware
 app.use('/api', Drive);
@@ -571,7 +518,7 @@ app.get('/admin/getRoleCounts', async (req, res) => {
 
 
 // Use the Event module routes
-app.use('/api', authenticateToken, logToken, EventModule);
+app.use('/api', EventModule);
 
 Account.getStudentEmailsByRole = async function (role) {
   try {

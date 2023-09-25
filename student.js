@@ -4,10 +4,10 @@ const { Sequelize, DataTypes } = require('sequelize');
 const router = express.Router();
 
 // Sequelize connection
-const sequelize = new Sequelize('signup', 'postgres', 'Gokul123@', {
+const sequelize = new Sequelize('Signup', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5432',
+  port: '5433',
 });
 
 // Define the Account model

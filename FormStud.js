@@ -4,10 +4,10 @@ const { Sequelize, DataTypes } = require('sequelize');
 const router = express.Router();
 
 // Create a new Sequelize instance with your database credentials
-const sequelize = new Sequelize('formsub', 'postgres', 'Gokul123@', {
+const sequelize = new Sequelize('Signup', 'postgres', '2004', {
   host: 'localhost',
   dialect: 'postgres',
-  port: '5432', // Adjust the port number based on your database configuration
+  port: '5433',
 });
 
 const Project = sequelize.define('Project', {
@@ -201,6 +201,34 @@ router.post('/verify/student/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to verify student' });
   }
 });
+
+// API endpoint to fetch the student's guide name based on the student's roll number from the submission
+router.get('/formproject/student-guide', async (req, res) => {
+  const { rollNumber } = req.query;
+
+  // Check if the rollNumber is provided and not empty
+  if (!rollNumber) {
+    return res.status(400).json({ error: 'Roll number is required' });
+  }
+
+  try {
+    // Find the student's record in the database
+    const student = await Project.findOne({ where: { rollNumber } });
+
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    // Retrieve the guide's name from the student's record
+    const guideName = student.guideName;
+
+    res.json({ guideName });
+  } catch (error) {
+    console.error('Error fetching student guide name:', error);
+    res.status(500).json({ error: 'Failed to fetch student guide name' });
+  }
+});
+
 
 
 module.exports = router;

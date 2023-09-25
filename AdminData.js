@@ -14,11 +14,11 @@ const upload = multer({ storage: storage });
 // Database connection configuration
 const dbConfig = {
   user: 'postgres',
-  password: 'Gokul123@',
+  password: '2004',
   host: 'localhost',
   dialect: 'postgres',
-  port: "5432", 
-  database: 'signup',
+  port: "5433", 
+  database: 'Signup',
 };
 
 // Helper function to parse Excel data
