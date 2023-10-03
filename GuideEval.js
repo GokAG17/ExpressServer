@@ -14,7 +14,7 @@ const sequelize = new Sequelize('Signup', 'postgres', '2004', {
 sequelize.options.logging = console.log;
 
 // Define the EvaluationForm model
-const EvaluationForm = sequelize.define('EvaluationForm', {
+const EvaluationFormGuide = sequelize.define('EvaluationFormGuide', {
   studentName: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -66,7 +66,7 @@ router.post('/formsguide', async (req, res) => {
   try {
     // Create a new evaluation form record in the database
     console.log('Creating new evaluation form...');
-    const evaluationForm = await EvaluationForm.create({
+    const evaluationForm = await EvaluationFormGuide.create({
       rollNo,
       studentName,
       formTitle,
@@ -97,7 +97,7 @@ router.get('/formsguide', async (req, res) => {
     
     console.log('Received request with rollNo:', rollNo, 'and reviewType:', reviewType);
     // Find the evaluation form submission in the database by the user's roll number and review type
-    const submissionData = await EvaluationForm.findOne({ where: { rollNo, reviewType } });
+    const submissionData = await EvaluationFormGuide.findOne({ where: { rollNo, reviewType } });
 
     if (!submissionData) {
       // Evaluation form submission not found for the user and review type
@@ -124,7 +124,7 @@ router.get('/formsguide', async (req, res) => {
     
     console.log('Received request with rollNo:', rollNo, 'and reviewType:', reviewType);
     // Find the evaluation form submission in the database by the user's roll number and review type
-    const submissionData = await EvaluationForm.findOne({ where: { rollNo, reviewType } });
+    const submissionData = await EvaluationFormGuide.findOne({ where: { rollNo, reviewType } });
 
     if (!submissionData) {
       // Evaluation form submission not found for the user and review type
@@ -146,7 +146,7 @@ router.get('/formsguide/check', async (req, res) => {
     const { rollNo, reviewType } = req.query;
 
     // Find the evaluation form entry in the database by roll number and review type
-    const entry = await EvaluationForm.findOne({ where: { rollNo, reviewType } });
+    const entry = await EvaluationFormGuide.findOne({ where: { rollNo, reviewType } });
 
     if (!entry) {
       // Entry not found for the given roll number and review type
@@ -204,7 +204,7 @@ router.get('/formsguidemark', async (req, res) => {
     console.log('Received request with rollNo:', rollNo);
 
     // Find the evaluation form submission in the database by the user's roll number
-    const submissionData = await EvaluationForm.findOne({ where: { rollNo } });
+    const submissionData = await EvaluationFormGuide.findOne({ where: { rollNo } });
 
     if (!submissionData) {
       // Evaluation form submission not found for the user
@@ -228,7 +228,7 @@ router.get('/formsguidemarkstaff', async (req, res) => {
     console.log('Received request with rollNo:', rollNo);
 
     // Find the evaluation form submission in the database by the user's roll number
-    const submissionData = await EvaluationForm.findOne({ where: { rollNo } });
+    const submissionData = await EvaluationFormGuide.findOne({ where: { rollNo } });
 
     if (!submissionData) {
       // Evaluation form submission not found for the user
@@ -253,7 +253,7 @@ router.get('/formsguideevaluationcompleted', async (req, res) => {
     console.log('Received request with rollNo:', rollNo);
 
     // Find the evaluation form submission in the database by the user's roll number
-    const submissionData = await EvaluationForm.findOne({ where: { rollNo } });
+    const submissionData = await EvaluationFormGuide.findOne({ where: { rollNo } });
 
     // Respond with a boolean indicating whether the evaluation form submission is completed
     res.json({ completed: !!submissionData }); // Converts the object to a boolean

@@ -218,5 +218,26 @@ router.delete('/booked-slots/:id', async (req, res) => {
   }
 });
 
+router.get('/eventfilter', async (req, res) => {
+  try {
+    // Get the title from the query parameter
+    const { title } = req.query;
+
+    // Perform the database query to find events with the given title
+    const events = await Event.findAll({
+      where: {
+        title: title // Filter events based on the provided title
+      }
+    });
+
+    res.json(events);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    res.status(500).json({ error: 'Failed to fetch events' });
+  }
+});
+
+
+
 
 module.exports = router;

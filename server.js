@@ -192,36 +192,28 @@ app.get('/api/currentuser', (req, res) => {
 // API endpoint to update user data
 app.post('/api/updateuser', async (req, res) => {
   try {
-    // Get the user's rollNo from the cookie
     const rollNo = req.cookies.loggedIn;
 
     if (!rollNo) {
-      // Cookie is not set, user is not authenticated
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Get the updated user data from the request body
     const { firstName, lastName, email, phoneNumber, department } = req.body;
 
-    // Find the user in the database by their rollNo
     const user = await Account.findOne({ where: { rollNo } });
 
     if (!user) {
-      // User not found in the database
+      
       return res.status(404).json({ error: 'User not found' });
     }
-
-    // Update the user's data with the edited values
     user.firstName = firstName;
     user.lastName = lastName;
     user.email = email;
     user.phoneNumber = phoneNumber;
-    user.department = department; // Assuming department is also editable
+    user.department = department; 
 
-    // Save the changes to the database
     await user.save();
 
-    // Respond with the updated user data (you can also send a success message if needed)
     res.json({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -230,14 +222,56 @@ app.post('/api/updateuser', async (req, res) => {
       phoneNumber: user.phoneNumber,
       role: user.role,
       university: user.university,
-      department: user.department, // Include the department in the response
-      // Add other relevant user data here
+      department: user.department, 
+      
     });
   } catch (error) {
     console.error('Error updating user data:', error);
     res.status(500).json({ error: 'An error occurred while updating user data' });
   }
 });
+
+app.post('/api/changepassword', async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const rollNo = req.cookies.loggedIn;
+
+  try {
+    console.log('Received request to change password with rollNo:', rollNo);
+    console.log('Old Password:', oldPassword);
+    console.log('New Password:', newPassword);
+
+    const account = await Account.findOne({
+      where: { rollNo: rollNo },
+    });
+
+    if (!account) {
+      console.log('Account not found for rollNo:', rollNo);
+      return res.status(404).json({ message: 'Account not found' });
+    }
+
+    // Compare the oldPassword with the decrypted password from the database
+    const isOldPasswordCorrect = await bcrypt.compare(oldPassword, account.password);
+
+    if (!isOldPasswordCorrect) {
+      console.log('Old password is incorrect for rollNo:', rollNo);
+      return res.status(400).json({ message: 'Old password is incorrect' });
+    }
+
+    // Hash the new password
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    account.password = hashedNewPassword;
+    await account.save();
+
+    console.log('Password changed successfully for rollNo:', rollNo);
+    res.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+
 
 // Form creation route
 app.post('/api/forms/create', createForm);
@@ -501,8 +535,8 @@ app.get('/admin/getUsersByRole/:role', async (req, res) => {
 // Route handler to get user counts by role
 app.get('/admin/getRoleCounts', async (req, res) => {
   try {
-    const studentCount = await Account.count({ where: { role: 'student' } });
-    const teacherCount = await Account.count({ where: { role: 'teacher' } });
+    const studentCount = await Account.count({ where: { role: 'Student' } });
+    const teacherCount = await Account.count({ where: { role: 'Panel' } });
     const guideCount = await Account.count({ where: { role: 'Guide' } });
 
     res.json({
@@ -537,7 +571,7 @@ Account.getStudentEmailsByRole = async function (role) {
 
 app.post('/api/send-email', async (req, res) => {
   const { subject, message } = req.body;
-  const role = 'student';
+  const role = 'Student';
   try {
     const studentEmails = await Account.getStudentEmailsByRole(role);
 
